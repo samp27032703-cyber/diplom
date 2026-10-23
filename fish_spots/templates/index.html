@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Слайдер (Bootstrap Carousel) -->
+<div id="fishCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        {% if spots_with_images %}
+            {% for spot in spots_with_images[:3] %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <img src="{{ spot.image_url }}" class="d-block w-100" style="height: 400px; object-fit: cover;" alt="{{ spot.title }}">
+                    <div class="carousel-caption bg-opacity-75">
+                        <h3>{{ spot.title }}</h3>
+                        <p>{{ spot.location }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="carousel-item active">
+                <img src="https://via.placeholder.com/1200x400?text=Нет+фото" class="d-block w-100" alt="Нет фото">
+                <div class="carousel-caption">
+                    <h3>Добавьте первое место с фото</h3>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#fishCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#fishCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+
+<!-- Список рыбных мест -->
+<h2>Лучшие рыбные места</h2>
+<div class="row">
+    {% for spot in spots %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if spot.image_url and spot.image_url.strip() != '' %}
+                    <img src="{{ spot.image_url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ spot.title }}">
+                {% else %}
+                    <div style="height:200px; background:#ddd; display:flex; align-items:center; justify-content:center;">
+                        Нет фото
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ spot.title }}</h5>
+                    <p class="card-text"><strong>Локация:</strong> {{ spot.location }}</p>
+                    <p class="card-text"><strong>Рыба:</strong> {{ spot.fish_types or 'Не указано' }}</p>
+                    <p class="text-muted small">{{ spot.description }}</p>
+                    <small class="text-muted">Добавлено {{ spot.created_at }}</small>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>Пока нет рыбных мест. Добавьте первое!</p>
+    {% endfor %}
+</div>
+{% endblock %}

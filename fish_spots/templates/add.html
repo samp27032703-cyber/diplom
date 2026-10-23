@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Добавить рыбное место</h2>
+<form method="POST">
+    <div class="mb-3">
+        <label>Название места</label>
+        <input type="text" name="title" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Описание</label>
+        <textarea name="description" class="form-control" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+        <label>Локация (город, водоём, ориентир)</label>
+        <input type="text" name="location" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Виды рыбы (через запятую)</label>
+        <input type="text" name="fish_types" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>Ссылка на фото (URL)</label>
+        <input type="url" name="image_url" class="form-control" placeholder="Например, https://...">
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить место</button>
+</form>
+{% endblock %}
