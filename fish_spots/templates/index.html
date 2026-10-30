@@ -1,60 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="hero-section text-center mb-4">
+    <h1 class="fw-bold">🎣 Карта рыбных мест</h1>
+    <p class="text-muted">Найдите идеальное место для рыбалки или добавьте своё</p>
+</div>
 
-<!-- Слайдер (Bootstrap Carousel) -->
-<div id="fishCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        {% if spots_with_images %}
-            {% for spot in spots_with_images[:3] %}
-                <div class="carousel-item {% if loop.first %}active{% endif %}">
-                    <img src="{{ spot.image_url }}" class="d-block w-100" style="height: 400px; object-fit: cover;" alt="{{ spot.title }}">
-                    <div class="carousel-caption bg-opacity-75">
-                        <h3>{{ spot.title }}</h3>
-                        <p>{{ spot.location }}</p>
+<div class="row">
+    <!-- Список мест (слева) -->
+    <div class="col-md-4 col-lg-3 order-md-last">
+        <h4 class="fw-bold mb-3">Места поблизости</h4>
+        {% if spots %}
+            <div class="d-flex flex-column gap-2">
+                {% for spot in spots %}
+                    <div class="card-custom spot-card p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="mb-0 fw-bold">{{ spot.title }}</h5>
+                            {% if spot.fish_types %}
+                                <span class="badge bg-light text-dark border">{{ spot.fish_types }}</span>
+                            {% endif %}
+                        </div>
+                        <p class="mb-2 text-muted small">{{ spot.location }}</p>
+                        {% if spot.description %}
+                            <p class="small text-truncate">{{ spot.description }}</p>
+                        {% endif %}
+                        <div class="small text-muted">
+                            Координаты: {{ spot.latitude|default('—') }}, {{ spot.longitude|default('—') }}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="carousel-item active">
-                <img src="https://via.placeholder.com/1200x400?text=Нет+фото" class="d-block w-100" alt="Нет фото">
-                <div class="carousel-caption">
-                    <h3>Добавьте первое место с фото</h3>
-                </div>
+                {% endfor %}
             </div>
+        {% else %}
+            <p class="text-muted">Пока нет мест. Авторизуйтесь и добавьте первое!</p>
         {% endif %}
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#fishCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#fishCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-    </button>
-</div>
 
-<!-- Список рыбных мест -->
-<h2>Лучшие рыбные места</h2>
-<div class="row">
-    {% for spot in spots %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                {% if spot.image_url and spot.image_url.strip() != '' %}
-                    <img src="{{ spot.image_url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ spot.title }}">
-                {% else %}
-                    <div style="height:200px; background:#ddd; display:flex; align-items:center; justify-content:center;">
-                        Нет фото
-                    </div>
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ spot.title }}</h5>
-                    <p class="card-text"><strong>Локация:</strong> {{ spot.location }}</p>
-                    <p class="card-text"><strong>Рыба:</strong> {{ spot.fish_types or 'Не указано' }}</p>
-                    <p class="text-muted small">{{ spot.description }}</p>
-                    <small class="text-muted">Добавлено {{ spot.created_at }}</small>
-                </div>
-            </div>
-        </div>
-    {% else %}
-        <p>Пока нет рыбных мест. Добавьте первое!</p>
-    {% endfor %}
+    <!-- Карта (справа) -->
+    <div class="col-md-8 col-lg-9">
+        <!-- Блок карты. Высота 580px обязательна, иначе он схлопнется -->
+        <div id="map" style="width: 100%; height: 580px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.08); background: #f8f9fa;"></div>
+    </div>
 </div>
 {% endblock %}
+
+<!-- 👇 ВАЖНО: ВСТАВЬ СЮДА СВОЙ НОВЫЙ API КЛЮЧ ВМЕСТО ТЕКСТА НИЖЕ 👇 -->
+<!-- Ключ должен быть типа: JavaScript API и HTTP Геокодер -->
+<script src="https://api-maps.yandex.ru/2.1/?apikey=3bc4baf7-b586-49e9-b6e1-41362f94b9fd&lang=ru_RU" type="text/javascript"></script>
+
+<script>
+    // Передаем
